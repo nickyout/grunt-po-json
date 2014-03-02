@@ -160,6 +160,12 @@ module.exports = function(grunt) {
                     break;
             }
         }
+        // Write final result as well...
+        if (id && str)
+        {
+            target[id] = str;
+            grunt.verbose.writeln('['[h] + sourceName + '] '[h] + ('"'+id+'"')[pn] + ': ' + ('"'+str+'"')[tn]);
+        }
         return target;
     };
 

@@ -2,17 +2,17 @@
   "name": "grunt-po-json",
   "description": "Converts one or more po files to a single json or amd module.",
   "version": "0.1.0",
-  "homepage": "",
+  "homepage": "https://github.com/nickyout/grunt-po-json",
   "author": {
     "name": "Nicky Out",
     "email": "nickyout@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "none"
+    "url": "git://github.com/nickyout/grunt-po-json.git"
   },
   "bugs": {
-    "url": ""
+    "url": "https://github.com/nickyout/grunt-po-json/issues"
   },
   "licenses": [
     {
@@ -36,6 +36,6 @@
     "grunt": "~0.4.2"
   },
   "keywords": [
-    "gruntplugin"
+    "gruntplugin", "json", "po", "amd"
   ]
 }
