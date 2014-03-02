@@ -20,7 +20,7 @@ grunt.loadNpmTasks('grunt-po-json');
 ## The "po_json" task
 
 ### Overview
-In your project's Gruntfile, add a section named `po_json` to the data object passed into `grunt.initConfig()`.
+In your project's Gruntfile, add a section named `po_json` to the data object passed into `grunt.initConfig()`. You must specify a target in which you can add `options` and `files`.
 
 ```js
 grunt.initConfig({
@@ -51,14 +51,14 @@ grunt.initConfig({
 Type: `Boolean`
 Default value: `false`
 
-Wraps the result in a `define();` call so you can use it as an amd module. You probably want your dest path to end with `.js` instead of `.json`.
+Wraps the result in a `define( );` call so you can use it as an amd module. You probably want your dest path to end with `.js` instead of `.json`.
 
 ### Files
 
 #### files[property]
 Type `String|Object`
 
-Each property of the files object can be a string path to a .po file, or an object of properties with string paths to .po files. In case of an object, the output file will have the output of each .po file under their respective property names.
+Each property of the files object can be a string path to a `.po` file, or an object of properties with string paths to `.po` files. In case of an object, the output file will have the output of each `.po` file under their respective property names.
 
 ### Usage Examples
 
