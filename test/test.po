@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Test\n"
+"POT-Creation-Date: 2014-02-20 13:04+0100\n"
+"PO-Revision-Date: 2014-02-20 13:04+0100\n"
+"Last-Translator: Nicky Out <nickyout@gmail.com>\n"
+"Language-Team: Test team <nickyout@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Bookmarks: -1,-1,-1,-1,-1,29,-1,-1,-1,-1\n"
+
+# Single line
+msgid "Single line id"
+msgstr "A single line string"
+
+# Multi line
+msgid ""
+    "Multi "
+  "line "
+"id"
+msgstr ""
+"A "
+  "multi "
+    "line "
+      "string"
+
+# Another Single line
+ msgid "Another single line id"
+ msgstr "A single line string 2"
+
+
+# Commented out
+#~ msgid "Commented id"
+#~ msgstr "Commented str"
+
