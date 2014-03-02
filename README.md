@@ -25,59 +25,76 @@ In your project's Gruntfile, add a section named `po_json` to the data object pa
 ```js
 grunt.initConfig({
   po_json: {
-    options: {
-      // Task-specific options go here.
+    target: {
+      files: {
+        'path/to/dest.json': 'path/to/src.po'
+      }
     },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
+    targetMultiple: {
+      options : {
+        amd: true
+      },
+      files: {
+        'path/to/dest2.js': {
+          'src2': 'path/to/src2.json',
+          'src3': 'path/to/src3.json'
+        }
+      }
+    }
   },
 });
 ```
 
 ### Options
 
-#### options.separator
-Type: `String`
-Default value: `',  '`
+#### options.amd
+Type: `Boolean`
+Default value: `false`
 
-A string value that is used to do something with whatever.
+Wraps the result in a `define();` call so you can use it as an amd module. You probably want your dest path to end with `.js` instead of `.json`.
 
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
+### Files
 
-A string value that is used to do something else with whatever else.
+#### files[property]
+Type `String|Object`
+
+Each property of the files object can be a string path to a .po file, or an object of properties with string paths to .po files. In case of an object, the output file will have the output of each .po file under their respective property names.
 
 ### Usage Examples
 
 #### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
+This example processes two `.po` files and puts them in two separate `.json` files.
 
 ```js
 grunt.initConfig({
   po_json: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
+    target: {
+      files: {
+        'path/to/dest1.json': 'path/to/src1.po'
+        'path/to/dest2.json': 'path/to/src2.po'
+      }
     },
   },
 });
 ```
 
 #### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+This example processes two `.po` files and puts them in a single `.js` file. It also turns it in an (anonymous) amd module. When used, the conversion results are accessible via `obj.src1` and `obj.src2`.
 
 ```js
 grunt.initConfig({
   po_json: {
     options: {
-      separator: ': ',
-      punctuation: ' !!!',
+      amd: true
     },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+    target: {
+      files: {
+        'path/to/dest.js': {
+          'src1': 'path/to/src1.po',
+          'src2': 'path/to/src2.po'
+        }
+      }
+    }
   },
 });
 ```

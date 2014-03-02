@@ -10,25 +10,26 @@
 
 module.exports = function(grunt) {
 
-    var h = 'yellow',
+    // Configuration of postStrToObject
+    var idReturn = '',
+        strReturn = '',
+        findID = /msgid\s+"(.*?)"$/,
+        findStr = /msgstr\s+"(.*?)"$/,
+        find = /"(.*?)"/,
+        h = 'yellow',
         pn = 'white',
         tn = 'grey';
 
-    // Please see the Grunt documentation for more information regarding task
-    // creation: http://gruntjs.com/creating-tasks
-
-    grunt.registerMultiTask('po_json', 'Converts one or more po files to a single json or amd module.', function() {
-        // Merge task-specific and/or target-specific options with these defaults.
+    grunt.registerMultiTask('po_json', 'Converts one or more po files to a single json or amd module.', function()
+    {
         var options = this.options(),
             files = this.data.files;
 
         if (this.files.length == 0)
         {
-            grunt.log.writeln('Nothing to convert.');
+            grunt.log.warn('Task "' + this.target +'" contains no files to convert. Omitting...');
             return;
         }
-
-        viewObj('options', options, true);
 
         for (var name in files)
         {
@@ -93,12 +94,6 @@ module.exports = function(grunt) {
         }
 
     };
-
-    var idReturn = '',
-        strReturn = '',
-        findID = /msgid\s+"(.*?)"$/,
-        findStr = /msgstr\s+"(.*?)"$/,
-        find = /"(.*?)"/;
 
     /**
      * Accepts the contents of a po file, and puts all translations in the target Object.
@@ -168,23 +163,19 @@ module.exports = function(grunt) {
         return target;
     };
 
-    /**
-     * Debug function. View objects
-     * @param tg
-     * @param text
-     * @param hasOwn use hasOwnProperty check
-     */
-    function viewObj(text, tg, hasOwn)
+    // Debug tool: view object properties
+    function viewObj(text, target)
     {
+        var h = 'yellow',
+            type,
+            content;
         if (text)
             grunt.log.writeln(text[h]);
-        for (var name in tg)
+        for (var name in target)
         {
-            if (hasOwn && !tg.hasOwnProperty(name))
-                continue;
-            var descr = grunt.util.kindOf(tg[name]);
-            grunt.log.writeln(' - '[h] + name + ': ' + descr.grey);
+            type = grunt.util.kindOf(target[name]);
+            content = (target[name] + '').match(/^.*?$/m);
+            grunt.log.writeln((' - {' + type + '} ')[h] + name + ': ' + content[0].grey);
         }
     }
-
 };
