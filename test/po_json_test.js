@@ -45,5 +45,15 @@ exports.po_json = {
         test.equal(actual, expected, 'Custom should have the same file contents. ');
 
         test.done();
+    },
+
+    wildcard_options: function(test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/wildcard_options.js');
+        var expected = grunt.file.read('test/expected/wildcard_options.js');
+        test.equal(actual, expected, 'Custom should have the same file contents. ');
+
+        test.done();
     }
 };

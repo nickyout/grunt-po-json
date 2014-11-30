@@ -1,6 +1,6 @@
 /*
  * grunt-po-json
- * 
+ *
  *
  * Copyright (c) 2014 Nicky Out
  * Licensed under the MIT license.
@@ -25,7 +25,7 @@ module.exports = function(grunt) {
         var options = this.options(),
             files = this.data.files;
 
-        if (this.files.length == 0)
+        if (this.files.length === 0)
         {
             grunt.log.warn('Task "' + this.target +'" contains no files to convert. Omitting...');
             return;
@@ -48,28 +48,31 @@ module.exports = function(grunt) {
      */
     var convertTask = function(src, destPath, options)
     {
-        var poStr,
+        var glob = require("glob"),
+            push = Array.prototype.push,
             returnObj = {},
             returnStr,
-            amd = options.amd || false;
+            amd = options.amd || false,
+            files = [],
+            kindOfSrc = grunt.util.kindOf(src);
 
-        switch (grunt.util.kindOf(src))
-        {
-            case "string":
-                (poStr = safeReadFile(src)) && (poStrToObject(poStr, returnObj, src));
-                break;
-
-            case "object":
-                // assume multiple, nested, src
-                for (var namespace in src)
+        if (kindOfSrc==="string") {
+            push.apply(files,glob.sync(src));
+        } else if (kindOfSrc==="object") {
+            for (var namespace in src)
+            {
+                if (src.hasOwnProperty(namespace))
                 {
-                    if (!src.hasOwnProperty(namespace))
-                        continue;
-
-                    (poStr = safeReadFile(src[namespace])) && (returnObj[namespace] = {}) && (poStrToObject(poStr, returnObj[namespace], src[namespace]));
+                   push.apply(files,glob.sync(src[namespace]));
                 }
-                break;
+            }
         }
+
+        files.filter(function (elem,pos) {
+            return files.indexOf(elem)===pos;
+        }).forEach(function (file,i) {
+            poStrToObject(safeReadFile(file), returnObj, file);
+        });
 
         // Seems to still process the gigantic string...
         returnStr = JSON.stringify(returnObj);
@@ -106,28 +109,40 @@ module.exports = function(grunt) {
      */
     var poStrToObject = function(poStr, target, sourceName, includeCommented)
     {
-        target || (target = {});
+        if (!target) target = {};
+        function writeToTarget(key,value) {
+            if (!target[lang]) target[lang] = {};
+            target[lang][key] = value;
+        }
         grunt.log.writeln('Reading ' + sourceName + '...');
         var id = '', str = '',
             match,
             line,
-            mode = 0;
+            mode = 0,
+            lang = 'xx';
 
         for (var i= 0, arr = poStr.split(/[\r\n]/g), max = arr.length; i<max; line = arr[i++])
         {
-            if (!line || line.charAt(0) == '#' && !includeCommented)
+            if (!line || line.charAt(0) === '#' && !includeCommented)
                 continue;
 
             switch (mode)
             {
                 case 0:
+                    // find language ISO (which, if present, is at the top part of the .po file)
+                    match = line.match(/^"Language:\s([a-z]{2}(_[A-Z]{2})?)/);
+                    if (match)
+                    {
+                        lang = match[1];
+                    }
+                    //
                     match = line.match(findID);
                     if (match)
                     {
                         // id - str pair complete, put into out
                         if (id && str)
                         {
-                            target[id] = str;
+                            writeToTarget(id,str);//target[id] = str;
                             grunt.verbose.writeln('['[h] + sourceName + '] '[h] + ('"'+id+'"')[pn] + ': ' + ('"'+str+'"')[tn]);
                         }
                         // start new id
@@ -163,7 +178,7 @@ module.exports = function(grunt) {
         // Write final result as well...
         if (id && str)
         {
-            target[id] = str;
+            writeToTarget(id,str);//target[id] = str;
             grunt.verbose.writeln('['[h] + sourceName + '] '[h] + ('"'+id+'"')[pn] + ': ' + ('"'+str+'"')[tn]);
         }
         return target;
