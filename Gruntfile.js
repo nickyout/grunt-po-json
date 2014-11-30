@@ -1,6 +1,6 @@
 /*
  * grunt-po-json
- * 
+ *
  *
  * Copyright (c) 2014 Nicky Out
  * Licensed under the MIT license.
@@ -44,6 +44,11 @@ module.exports = function(grunt) {
                   "test": "test/test.po",
                   "test2": "test/test2.po"
               }
+          }
+      },
+      wildcard: {
+          "files": {
+              "tmp/wildcard_options.js": "test/*.po"
           }
       }
 
