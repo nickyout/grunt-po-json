@@ -1,6 +1,6 @@
 /*
  * grunt-po-json
- * 
+ *
  *
  * Copyright (c) 2014 Nicky Out
  * Licensed under the MIT license.
@@ -13,8 +13,9 @@ module.exports = function(grunt) {
     // Configuration of postStrToObject
     var idReturn = '',
         strReturn = '',
-        findID = /msgid\s+"(.*?)"$/,
-        findStr = /msgstr\s+"(.*?)"$/,
+        contextRegex = /msgctxt\s+"(.*?)"$/,
+        untranslatedStringRegex = /msgid\s+"(.*?)"$/,
+        translatedStringRegex = /msgstr\s+"(.*?)"$/,
         find = /"(.*?)"/,
         h = 'yellow',
         pn = 'white',
@@ -25,7 +26,7 @@ module.exports = function(grunt) {
         var options = this.options(),
             files = this.data.files;
 
-        if (this.files.length == 0)
+        if (this.files.length === 0)
         {
             grunt.log.warn('Task "' + this.target +'" contains no files to convert. Omitting...');
             return;
@@ -33,8 +34,9 @@ module.exports = function(grunt) {
 
         for (var name in files)
         {
-            if (!files.hasOwnProperty(name))
+            if (!files.hasOwnProperty(name)) {
                 continue;
+            }
             convertTask(files[name], name, options);
         }
     });
@@ -55,26 +57,32 @@ module.exports = function(grunt) {
 
         switch (grunt.util.kindOf(src))
         {
-            case "string":
-                (poStr = safeReadFile(src)) && (poStrToObject(poStr, returnObj, src));
+            case 'string':
+                poStr = safeReadFile(src);
+                poStrToObject(poStr, returnObj, src, false, options);
+
                 break;
 
-            case "object":
+            case 'object':
                 // assume multiple, nested, src
                 for (var namespace in src)
                 {
-                    if (!src.hasOwnProperty(namespace))
+                    if (!src.hasOwnProperty(namespace)) {
                         continue;
+                    }
 
-                    (poStr = safeReadFile(src[namespace])) && (returnObj[namespace] = {}) && (poStrToObject(poStr, returnObj[namespace], src[namespace]));
+                    poStr = safeReadFile(src[namespace]);
+                    returnObj[namespace] = {};
+                    poStrToObject(poStr, returnObj[namespace], src[namespace], false, options);
                 }
                 break;
         }
 
         // Seems to still process the gigantic string...
         returnStr = JSON.stringify(returnObj);
-        if (amd)
+        if (amd) {
             returnStr = 'define(' + returnStr + ');';
+        }
         grunt.file.write(destPath, returnStr);
         grunt.log.writeln('File "' + destPath + '" created.');
     };
@@ -102,26 +110,32 @@ module.exports = function(grunt) {
      * @param {Object=} target Target object. If not specified, creates new object
      * @param {String} sourceName Used for logging only.
      * @param {Boolean} includeCommented pass true to include translations that are commented out.
+     * @param {Object} options, e.g. translation key or value overrides
      * @returns {Object} The translations in name-value pairs.
      */
-    var poStrToObject = function(poStr, target, sourceName, includeCommented)
+    var poStrToObject = function(poStr, target, sourceName, includeCommented, options)
     {
-        target || (target = {});
+        target =  target || {};
         grunt.log.writeln('Reading ' + sourceName + '...');
         var id = '', str = '',
             match,
             line,
             mode = 0;
 
+        var translationKeyRegex = options.useMsgctxtAsKey ? contextRegex : untranslatedStringRegex;
+        var translationValueRegex = translatedStringRegex;
+        var ignoreFieldRegex = options.useMsgctxtAsKey ? untranslatedStringRegex : null;
+
         for (var i= 0, arr = poStr.split(/[\r\n]/g), max = arr.length; i<max; line = arr[i++])
         {
-            if (!line || line.charAt(0) == '#' && !includeCommented)
+            if (!line || line.charAt(0) === '#' && !includeCommented) {
                 continue;
+            }
 
             switch (mode)
             {
                 case 0:
-                    match = line.match(findID);
+                    match = line.match(translationKeyRegex);
                     if (match)
                     {
                         // id - str pair complete, put into out
@@ -136,6 +150,12 @@ module.exports = function(grunt) {
                         mode = 1;
                         break;
                     }
+                    match = line.match(translationValueRegex);
+                    if (match) {
+                        // start new str
+                        str = match[1];
+                        break;
+                    }
                     match = line.match(find);
                     if (match)
                     {
@@ -145,24 +165,30 @@ module.exports = function(grunt) {
                     }
                     break;
                 case 1:
-                    match = line.match(findStr);
-                    if (match)
-                    {
+                    match = line.match(translationValueRegex);
+                    if (match) {
                         // start new str
                         str = match[1];
                         mode = 0;
                         break;
                     }
+                    if (ignoreFieldRegex) {
+                        match = line.match(ignoreFieldRegex);
+                        if (match) {
+                            mode = 0;
+                            break;
+                        }
+                    }
                     match = line.match(find);
-                    if (match)
-                    // append to existing id
+                    if (match) {
+                        // append to existing id
                         id += idReturn + match[1];
+                    }
                     break;
             }
         }
         // Write final result as well...
-        if (id && str)
-        {
+        if (id && str) {
             target[id] = str;
             grunt.verbose.writeln('['[h] + sourceName + '] '[h] + ('"'+id+'"')[pn] + ': ' + ('"'+str+'"')[tn]);
         }
@@ -175,8 +201,9 @@ module.exports = function(grunt) {
         var h = 'yellow',
             type,
             content;
-        if (text)
+        if (text) {
             grunt.log.writeln(text[h]);
+        }
         for (var name in target)
         {
             type = grunt.util.kindOf(target[name]);

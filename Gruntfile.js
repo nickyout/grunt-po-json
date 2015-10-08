@@ -1,6 +1,6 @@
 /*
  * grunt-po-json
- * 
+ *
  *
  * Copyright (c) 2014 Nicky Out
  * Licensed under the MIT license.
@@ -31,19 +31,27 @@ module.exports = function(grunt) {
     // Configuration to be run (and then tested).
     po_json: {
       default_options: {
-          "files": {
-              "tmp/default_options.json": "test/test.po"
+          'files': {
+              'tmp/default_options.json': 'test/test.po'
           }
       },
       custom_options: {
-          "options": {
-              "amd": true
+          'options': {
+              'amd': true
           },
-          "files": {
-              "tmp/custom_options.js": {
-                  "test": "test/test.po",
-                  "test2": "test/test2.po"
+          'files': {
+              'tmp/custom_options.js': {
+                  'test': 'test/test.po',
+                  'test2': 'test/test2.po'
               }
+          }
+      },
+      custom_option_key: {
+          'options': {
+              'useMsgctxtAsKey': true
+          },
+          'files': {
+              'tmp/custom_option_key.json': 'test/test3.po'
           }
       }
 

@@ -53,6 +53,12 @@ Default value: `false`
 
 Wraps the result in a `define( );` call so you can use it as an amd module. You probably want your dest path to end with `.js` instead of `.json`.
 
+#### options.useMsgctxtAsKey
+Type: `Boolean`
+Default value: `false`
+
+Matches msgctxt and msgstr instead of msgid and msgstr.
+
 ### Files
 
 #### files[property]

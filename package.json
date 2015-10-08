@@ -14,12 +14,7 @@
   "bugs": {
     "url": "https://github.com/nickyout/grunt-po-json/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "/blob/master/LICENSE-MIT"
-    }
-  ],
+  "license": "MIT",
   "engines": {
     "node": ">= 0.8.0"
   },
