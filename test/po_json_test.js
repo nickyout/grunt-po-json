@@ -45,5 +45,15 @@ exports.po_json = {
         test.equal(actual, expected, 'Custom should have the same file contents. ');
 
         test.done();
+    },
+
+    custom_option_key: function(test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/custom_option_key.json');
+        var expected = grunt.file.read('test/expected/custom_option_key.json');
+        test.equal(actual, expected, 'Custom key should have the same file contents.');
+
+        test.done();
     }
 };
