@@ -1,4 +1,5 @@
 # grunt-po-json
+*As of 0.2.0, this task gives a warning and aborts when it does not find a specified translation file. This behavior can be overridden with --force.*
 
 > Converts one or more po files to a single json or amd module.
 
@@ -107,6 +108,3 @@ grunt.initConfig({
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
-
-## Release History
-_(Nothing yet)_
