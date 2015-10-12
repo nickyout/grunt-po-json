@@ -59,7 +59,10 @@ module.exports = function(grunt) {
         {
             case 'string':
                 poStr = safeReadFile(src);
-                poStrToObject(poStr, returnObj, src, false, options);
+
+                if (poStr) {
+                    poStrToObject(poStr, returnObj, src, false, options);       
+                }
 
                 break;
 
@@ -72,8 +75,11 @@ module.exports = function(grunt) {
                     }
 
                     poStr = safeReadFile(src[namespace]);
-                    returnObj[namespace] = {};
-                    poStrToObject(poStr, returnObj[namespace], src[namespace], false, options);
+
+                    if (poStr) {
+                        returnObj[namespace] = {};
+                        poStrToObject(poStr, returnObj[namespace], src[namespace], false, options);                   
+                    }
                 }
                 break;
         }
@@ -95,7 +101,7 @@ module.exports = function(grunt) {
     var safeReadFile = function(path)
     {
         if (!grunt.file.exists(path)) {
-            grunt.log.warn('Source file "' + path + '" not found.');
+            grunt.fail.warn('Source file "' + path + '" not found.');
             return null;
         } else {
             return grunt.file.read(path);
